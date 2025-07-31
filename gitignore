@@ -1,7 +1,0 @@
-.env
-pgdata
-logs
-.vscode
-requirements.txt
-docker-compose.yml
-dockerfile

@@ -1,4 +1,4 @@
-.env
 pgdata
 logs
-.vscode
+vscode
+.env

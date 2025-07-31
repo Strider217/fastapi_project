@@ -1,0 +1,5 @@
+asyncio
+asyncpg
+fastapi
+pydantic
+uvicorn

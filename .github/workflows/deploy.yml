@@ -1,0 +1,32 @@
+
+
+name: CI/CD-deploy
+on: 
+  push:
+    branches:
+    - main
+jobs: 
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_IMAGE }}
+
+      - name: Prepare SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Deploy to server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "docker pull ${{ secrets.DOCKER_IMAGE }} && \
+             docker stop miniblog  true && \
+             docker rm miniblog  true && \
+             docker run -d --name miniblog -p 8080:8000 ${{ secrets.DOCKER_IMAGE }}"
